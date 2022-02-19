@@ -1,0 +1,43 @@
+{
+  "name": "wigo-info-api",
+  "version": "1.0.0",
+  "description": "Serverless API implementation for WigoSwap on-chain data query.",
+  "repository": "git@github.com:wigoswap/wigo-info-api.git",
+  "author": "WigoSwap",
+  "license": "MIT",
+  "scripts": {
+    "format:check": "prettier --check '*/**/*.{js,ts}'",
+    "format:write": "prettier --write '*/**/*.{js,ts}'",
+    "lint": "eslint '*/**/*.{js,ts}'",
+    "codegen": "graphql-codegen --config utils/apollo/codegen.yml"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn format:write",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "dependencies": {
+    "@apollo/client": "^3.3.13",
+    "@ethersproject/address": "^5.1.0",
+    "bignumber.js": "^9.0.1",
+    "cross-fetch": "^3.1.3",
+    "graphql-tag": "^2.11.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "@graphql-codegen/cli": "^1.21.3",
+    "@graphql-codegen/typescript": "^1.17.11",
+    "@graphql-codegen/typescript-operations": "^1.17.11",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "@vercel/node": "^1.9.1",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "graphql": "^15.5.0",
+    "husky": "^4.3.8",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.3"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "WigoSwap Exchange",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "WigoSwap Exchange": {
+        "url": "https://api.thegraph.com/subgraphs/name/wigoswap/exchange",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": false
+      }
+    }
+  }
+}
