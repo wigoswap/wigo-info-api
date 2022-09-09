@@ -1,7 +1,14 @@
 import BigNumber from "bignumber.js";
 import { BLACKLIST } from "./constants/blacklist";
 import { client } from "./apollo/client";
-import { TOP_PAIRS, PAIRS_VOLUME_QUERY, TOKEN_BY_ADDRESS } from "./apollo/queries";
+import {
+  TOP_PAIRS,
+  PAIRS_VOLUME_QUERY,
+  TOKEN_BY_ADDRESS,
+  PAIR_DATA,
+  SWAPS_DATA,
+  ORDERBOOK_DATA,
+} from "./apollo/queries";
 import { getBlockFromTimestamp } from "./blocks/queries";
 import {
   PairsVolumeQuery,
@@ -11,6 +18,7 @@ import {
   TopPairsQuery,
   TopPairsQueryVariables,
 } from "./generated/subgraph";
+import { computeBidsAsks } from "../utils/computeBidsAsks";
 
 const TOP_PAIR_LIMIT = 1000;
 export type Token = TokenQuery["token"];
@@ -116,4 +124,71 @@ export async function getTopPairs(): Promise<MappedDetailedPair[]> {
       }
     ) ?? []
   );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getSwaps(addressA: string, addressB: string): Promise<any> {
+  const {
+    data: { pairs },
+    errors: pairsErrors,
+  } = await client.query({
+    query: PAIR_DATA,
+    variables: {
+      tokenA: addressA.toLowerCase(),
+      tokenB: addressB.toLowerCase(),
+    },
+    fetchPolicy: "cache-first",
+  });
+
+  if (pairsErrors && pairsErrors.length > 0) {
+    throw new Error("Failed to fetch pair from subgraph");
+  }
+
+  const pairAddress = pairs[0].id;
+  const _24HoursAgo = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000);
+
+  const {
+    data: { swaps },
+    errors: swapsErrors,
+  } = await client.query({
+    query: SWAPS_DATA,
+    variables: {
+      _24HoursAgo: _24HoursAgo,
+      pairAddress: pairAddress,
+    },
+    fetchPolicy: "cache-first",
+  });
+
+  if (swapsErrors && swapsErrors.length > 0) {
+    throw new Error("Failed to fetch swaps from subgraph");
+  }
+
+  return swaps;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getOrderBook(addressA: string, addressB: string, depth = 200): Promise<any> {
+  const {
+    data: { pairs },
+    errors: pairsErrors,
+  } = await client.query({
+    query: ORDERBOOK_DATA,
+    variables: {
+      tokenA: addressA.toLowerCase(),
+      tokenB: addressB.toLowerCase(),
+    },
+    fetchPolicy: "cache-first",
+  });
+
+  if (pairsErrors && pairsErrors.length > 0) {
+    throw new Error("Failed to fetch pair from subgraph");
+  }
+
+  const [reservesA, reservesB] = [pairs[0].reserve0, pairs[0].reserve1];
+  const timestamp = new Date().getTime();
+
+  return {
+    timestamp,
+    ...computeBidsAsks(new BigNumber(reservesA), new BigNumber(reservesB), depth),
+  };
 }
