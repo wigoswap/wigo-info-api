@@ -4,7 +4,7 @@
   "extensions": {
     "endpoints": {
       "Fantom Blocks": {
-        "url": "https://api.thegraph.com/subgraphs/name/wigoswap/blocks",
+        "url": "https://gateway-arbitrum.network.thegraph.com/api/5dace53f482f1751985afdebcb310dba/subgraphs/id/2CosRXHL3aQXC24wfjzYthxpjmAKCC8eTiSUtGawfnNn",
         "headers": {
           "user-agent": "JS GraphQL"
         },
