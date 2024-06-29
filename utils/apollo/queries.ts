@@ -54,3 +54,38 @@ export const TOP_PAIRS = gql`
     }
   }
 `;
+
+export const ORDERBOOK_DATA = gql`
+  query pairReseveData($tokenA: String!, $tokenB: String!) {
+    pairs(where: { token0: $tokenA, token1: $tokenB }) {
+      id
+      reserve0
+      reserve1
+    }
+  }
+`;
+
+export const PAIR_DATA = gql`
+  query pairData($tokenA: String!, $tokenB: String!) {
+    pairs(where: { token0: $tokenA, token1: $tokenB }) {
+      id
+    }
+  }
+`;
+
+export const SWAPS_DATA = gql`
+  query swapsData($_24HoursAgo: Int!, $pairAddress: String!) {
+    swaps(
+      orderBy: timestamp
+      orderDirection: asc
+      where: { timestamp_gte: $_24HoursAgo, pair: $pairAddress }
+    ) {
+      id
+      timestamp
+      amount0In
+      amount0Out
+      amount1In
+      amount1Out
+    }
+  }
+`;

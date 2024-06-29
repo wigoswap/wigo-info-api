@@ -9,6 +9,14 @@
     {
       "source": "/api/tokens/:address",
       "destination": "/api/tokens/tokens"
+    },
+    {
+      "source": "/api/v1/market/trades/:marketPair",
+      "destination": "/api/v1/market/trades"
+    },
+    {
+      "source": "/api/v1/market/orderbook/:marketPair",
+      "destination": "/api/v1/market/orderbook"
     }
   ],
   "headers": [
